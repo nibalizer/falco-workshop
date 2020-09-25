@@ -392,6 +392,8 @@ The container runtime environment is `containerd`.
 
 1. Installing the Helm Client (helm)
 
+You may have the `helm` client installed already. Verify with `which helm` on the command line. If you have `helm` already, skip to "Using the helm chart"
+
 The Helm client (`helm`) can be installed from source or pre-built binary releases. In this lab, we are going to use the pre-built binary release (Linux amd64) from the Helm community. Refer to the [Helm install docs](https://helm.sh/docs/intro/install/) for more details.
 
 
@@ -406,6 +408,7 @@ The Helm client (`helm`) can be installed from source or pre-built binary releas
 
 You are now ready to start using Helm.
 
+### Using the helm chart
 
 The source code you need is in the helm chart:
 
