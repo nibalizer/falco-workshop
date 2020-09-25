@@ -16,43 +16,43 @@ Table of Contents
   * Kubernetes Cluster checkout
   * Kubernetes 101 really fast
 
-1. System Calls
+* Falco and System Calls
 
-1. Installing Falco in Kubernetes
-* Verify Kubernetes Configuration
-* Installing Helm
-* Cloning charts repo
-* Configure values.yaml for helm
-* Helm install
+* Installing Falco in Kubernetes
+  * Verify Kubernetes Configuration
+  * Installing Helm
+  * Cloning charts repo
+  * Configure values.yaml for helm
+  * Helm install
 
-1. First events
-* Tail logs in pod
-* Create events
-* Switch to json output
-* Read more events, use jq
+* First events
+  * Tail logs in pod
+  * Create events
+  * Switch to json output
+  * Read more events, use jq
 
-1. Falco sidekick
-* slack output / discord output
-* set custom string in falco sidekick
-* brief view of other outputs
+* Falco sidekick
+  * slack output / discord output
+  * set custom string in falco sidekick
+  * brief view of other outputs
 
-1. Write a rule
-* rule edit
-* apply using helm
-* trigger rule
-* adjust macros
-* apply using helm
-* trigger rule
-* write a rule from scratch
-* adjust macros
-* trigger rule
+* Write a rule
+  * rule edit
+  * apply using helm
+  * trigger rule
+  * adjust macros
+  * apply using helm
+  * trigger rule
+  * write a rule from scratch
+  * adjust macros
+  * trigger rule
 
-1. gRPC
-* configure unix domain socket
-* use go client
-* use python client
-* use rust client
-* for python client - make it do another thing (batch probably)
+* gRPC
+  * configure unix domain socket
+  * use go client
+  * use python client
+  * use rust client
+  * for python client - make it do another thing (batch probably)
 
 
 
