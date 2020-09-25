@@ -7,6 +7,9 @@ In this workshop you'll be introduced to Falco, a security tool. Falco is a Clou
 
 Falco helps you identify security threats in real time by detecting malicious activity. It works by watching system calls as they are processed by the kernel. This means it's much harder for bad actors to hide from falco, and that falco has first-class container and kubernetes support.
 
+![falco logo](img/falco_primary-logo.png)
+
+To get you hands on access with Falco we're giving you a free IBM Cloud Account and free IBM Cloud Kubernetes Cluster. You require zero money or credit card info to do this workshop.
 
 Table of Contents
 
@@ -55,11 +58,35 @@ Table of Contents
   * for python client - make it do another thing (batch probably)
 
 
+# Account Setup
 
+Sign up for a free IBM Cloud account or log in here:  http://ibm.biz/202007-containers
+
+> You might want to ask your IBM instructor to whitelist the public IP and or the above signup link at the following registration whitelisting site: https://cloud.ibm.com/registration/whitelist
+
+> If you have already an IBM lite account or a Pay-As-You-Go account please access your IBM Cloud Dashboard by clicking the above link, and check the Step 4 - Next Steps section.
+
+
+![ibmcloud login](img/ibm_cloud_login.png)
+![ibmcloud set password](ibm_cloud_signup.png)
+
+You will need to do a verification step. Tell your instructor if you have any issues.
+
+## Kubernetes cluster assignment
+
+Instead of creating a Kubernetes cluster in your account, we are giving you access to a pre-created cluster in an IBM controlled (and paid) account. This gives you the full paid cluster experience which is superior to the limitations of a free trial and doesn't require you to put in a credit card.
+
+Navigate to the [cluster checkout page](https://falcolab.mybluemix.net). Use the password `ikslab` and use the email you signed up for IBM Cloud with.
+
+![grant cluster userpass](img/)
+
+You've been given a cluster. You'll see the following view. This means a cluster has been granted to you.
+
+Return to the main cloud page at [cloud.ibm.com](https://cloud.ibm.com)
+
+Once there, use the user account switcher (see screenshot) to switch accounts to "1840867-IBM". We'll do the majority of the work in this account. If this worked, you should see "1" under the resource summary in the middle left.
 
 # Lab setup - get web terminal and content
-
-You will already need an IBM Cloud account and an IBM Kubernetes Service cluster (free or paid) in order to proceed. You should have completed this in the previous module.
 
 ## Set up the web terminal
 
