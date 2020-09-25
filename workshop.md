@@ -146,8 +146,7 @@ By identifying that pairing of systemcal = openat and filename = 'test.txt' we c
 This falco rule would be able to detect that behavior:
 
 
-
-
+```
 - rule: Read secure .txt file
   desc: >
     an attempt to read the secure file test.txt
