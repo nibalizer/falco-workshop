@@ -215,9 +215,7 @@ At its core, you can think of Kubernetes as being a highly-available database an
 Included in Kubernetes are a number of basic objects necessary for supporting applications as well as abstractions to simplify the configuration and management of applications. The most common basic object is a [**pod**](https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/) which encapsulates one or more containers along with storage resources, a unique network address and configuration options. The **pod** reflects the smallest unit of deployment. Although **pods** are technically transient, they will usually run until something destroys them, either a human operator or a controller. A [**Deployment**](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) is an abstraction that you can use to create a deployment of an application. It provides support for horizontally scaling pods, updating the container image used by the pods and also rollbacks.
 
 To create your application, you used the `kubectl` command to create a **deployment** object and provided a name for the deployment, "guestbook", and also the container image to use. These options were combined with defaults for the object to create the desired state that was stored in the database. Reconciliation of the desired state resulted in a single pod being started in the cluster. Then, you used the `kubectl expose` command to make the **deployment** resource accessible both inside and outside of the cluster. This command creates a [**Service**](https://kubernetes.io/docs/concepts/services-networking/service/) for a number of different resource types (deployment, replica set, replication controler, pod) to allow access to a network port on the resource.
-
-Congratulations, you've finished the preamble. On to the meat of the workshop.
-
+Congratulations, you've finished the preamble. On to the meat of the workshop.  
 
 ## Falco and System Calls
 
@@ -248,7 +246,7 @@ this is a test
 
 Imagine that `test.txt` held some data we wanted to keep secure. Any attempt by a program to read that data should be considered a potential breach.
 
-Now run the cat command inside `strace`, which will run the same command but show you which systemcalls are being run:
+Now run the cat command inside `strace`, which will run the same command but show you which systemcalls are being run. Note that `strace` is not available on the cloud shell. See "Running without strace" below.
 
 ```
 [nibz@fermi falco]$ strace cat test.txt
@@ -337,6 +335,51 @@ Falco has configuration options to send these alerts to a variety of places. Sys
 
 
 In the following section we'll go through the steps of installing falco, creating events, and processing those events with output tools.
+
+## Running without strace
+
+The cloud shell environment doesn't have strace installed. We'll instead use a binary created by [Liz Rice](https://twitter.com/lizrice). ["Strace in 60 lines of go"](https://medium.com/hackernoon/strace-in-60-lines-of-go-b4b76e3ecd64)
+
+Download the binary from remote server:
+
+```
+mytestmytest@cloudshell:~$ wget http://52.117.127.35:8080/strace-from-scratch                                                                                           
+ 
+--2020-09-25 22:50:52--  http://52.117.127.35:8080/strace-from-scratch
+Connecting to 52.117.127.35:8080... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2450248 (2.3M) [application/octet-stream]
+Saving to: ‘strace-from-scratch’
+
+strace-from-scratch                        100%[=====================================================================================>]   2.34M  8.79MB/s    in 0.3s    
+
+2020-09-25 22:50:53 (8.79 MB/s) - ‘strace-from-scratch’ saved [2450248/2450248]
+```
+
+Mark as executable and run it:
+
+```
+mytestmytest@cloudshell:~$ chmod +x strace-from-scratch 
+mytestmytest@cloudshell:~$ ./strace-from-scratch cat myfile 
+Run [cat myfile]
+Wait returned: stop signal: trace/breakpoint trap
+yeet
+        3|read
+        1|write
+        6|close
+        5|fstat
+        7|mmap
+        4|mprotect
+        2|munmap
+        3|brk
+        3|access
+        1|execve
+        1|arch_prctl
+        1|fadvise64
+        4|openat
+```
+
+You can see the openat syscall at the end of the output. 
 
 
 # Installing Falco in Kubernetes
