@@ -78,11 +78,15 @@ Instead of creating a Kubernetes cluster in your account, we are giving you acce
 
 Navigate to the [cluster checkout page](https://falcolab.mybluemix.net). Use the password `ikslab` and use the email you signed up for IBM Cloud with.
 
-![grant cluster userpass](img/)
+![grant cluster userpass](img/grantcluster_input.png)
 
 You've been given a cluster. You'll see the following view. This means a cluster has been granted to you.
 
+![grant cluster success](img/grant_cluster_success.png)
+
 Return to the main cloud page at [cloud.ibm.com](https://cloud.ibm.com)
+
+![ibm_cloud_user_switcher.jpg](img/ibm_cloud_user_switcher.jpg)
 
 Once there, use the user account switcher (see screenshot) to switch accounts to "1840867-IBM". We'll do the majority of the work in this account. If this worked, you should see "1" under the resource summary in the middle left.
 
