@@ -10,11 +10,11 @@ Falco helps you identify security threats in real time by detecting malicious ac
 
 Table of Contents
 
-1. IBM Cloud Setup
-  1. Account
-  1. Cloud Shell
-  1. Kubernetes Cluster checkout
-  1. Kubernetes 101 really fast
+* IBM Cloud Setup
+  * Account
+  * Cloud Shell
+  * Kubernetes Cluster checkout
+  * Kubernetes 101 really fast
 
 1. System Calls
 
