@@ -61,6 +61,14 @@ In this tutorial, you learn to install and set up Falco on a Kubernetes cluster 
 
 ## System Calls
 
+From wikipedia:
+
+```
+In computing, a system call (commonly abbreviated to syscall) is the programmatic way in which a computer program requests a service from the kernel of the operating system on which it is executed. This may include hardware-related services (for example, accessing a hard disk drive), creation and execution of new processes, and communication with integral kernel services such as process scheduling. System calls provide an essential interface between a process and the operating system. 
+```
+
+System Calls are involved whenever your code is actually doing something on the system. Writing files, reading files, opening network ports, getting the system time, etc all eventually result in a system call being performed. Let's see them in action:
+
 
 Create a file:
 
@@ -128,7 +136,7 @@ exit_group(0)                           = ?
 +++ exited with 0 +++
 ```
 
-In our systemcall output Notably this line appears:
+In our systemcall output this line appears:
 
 ```
 openat(AT_FDCWD, "test.txt", O_RDONLY)  = 3
