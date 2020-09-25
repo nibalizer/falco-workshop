@@ -68,7 +68,7 @@ Sign up for a free IBM Cloud account or log in here:  http://ibm.biz/202007-cont
 
 
 ![ibmcloud login](img/ibm_cloud_login.png)
-![ibmcloud set password](ibm_cloud_signup.png)
+![ibmcloud set password](img/ibm_cloud_signup.png)
 
 You will need to do a verification step. Tell your instructor if you have any issues.
 
