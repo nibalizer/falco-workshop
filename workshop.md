@@ -487,13 +487,29 @@ You may have the `helm` client installed already, however, we want version 3 of 
 The Helm client (`helm`) can be installed from source or pre-built binary releases. In this lab, we are going to use the pre-built binary release (Linux amd64) from the Helm community. Refer to the [Helm install docs](https://helm.sh/docs/intro/install/) for more details.
 
 
-1. Download the [latest release of Helm v3](https://github.com/helm/helm/releases) for your environment, the steps below are for `Linux amd64`, adjust the examples as needed for your environment.
+1. Download the [latest release of Helm v3](https://github.com/helm/helm/releases) for your environment, the steps below are for `Linux amd64`, adjust the examples as needed for your environment. The cloud shell is running `Linux amd64`.
 
 2. Unpack it: `$ tar -zxvf helm-v3.<x>.<y>-linux-amd64.tgz`.
 
-3. Find the helm binary in the unpacked directory, and move it to its desired location: `mv linux-amd64/helm /usr/local/bin/helm`. It is best if the location you copy to is pathed, as it avoids having to path the helm commands.
 
-4. The Helm client is now installed and can be tested with the command, `helm help`.
+3. Create a binary dir and put it at the front of your path (to cloak the old helm version).
+
+
+```bash
+$ mkdir -p ${HOME}/bin
+$ cp linux-amd64/helm ${HOME}/bin
+$ echo '' >> .bashrc # don't ask
+$ echo 'export PATH=${HOME}/bin:${PATH}' >> .bashrc
+$ source .bashrc
+```
+
+4. The Helm client is now installed and can be tested with the commands `helm help` and `helm version`.
+
+```
+$ helm version
+version.BuildInfo{Version:"v3.3.4", GitCommit:"a61ce5633af99708171414353ed49547cf05013d", GitTreeState:"clean", GoVersion:"go1.14.9"}
+```
+
 
 ### Using the helm chart
 
@@ -556,10 +572,12 @@ No further action should be required.
 And validate:
 
 ```
+$ helm list
+NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+falco   default         1               2020-09-26 00:34:51.827988144 +0000 UTC deployed        falco-1.4.0     0.25.0     
+
 $ k get pod
 NAME          READY   STATUS    RESTARTS   AGE
-falco-5lqs4   1/1     Running   0          4m47s
-falco-lm2x2   1/1     Running   0          4m47s
 falco-pwc5l   1/1     Running   0          4m47s
 
 $ k logs falco-pwc5l
