@@ -969,7 +969,7 @@ Currently available outputs are :
 
 
 
-Note: hitting `http://localhost:2701/` (the sidekick listen address and port, with an empty payload and url string) will generate a test message, very useful for developing plugins or debugging configuration.
+Note: POST ing to `http://localhost:2801/test` (the sidekick listen address and port, with an empty payload and url string) will generate a test message, very useful for developing plugins or debugging configuration.
 
 
 To set up the sidekick, we'll do the following:
@@ -980,8 +980,9 @@ To set up the sidekick, we'll do the following:
 1. Test the sidekick
 1. Re-configure falco to forward events to the sidekick
 
-[discord invite](https://discord.gg/CAJkrUH)
-[discord webhook](https://discordapp.com/api/webhooks/759212469117255712/lxyTRB_Q7aF3H_xlY1vcoV0UWzsdK-sUiwFycrufwp_O-MaM0yFCp7lpCmGd0S61Icrp)
+
+* [discord invite](https://discord.gg/CAJkrUH)
+* [discord webhook](https://discordapp.com/api/webhooks/759212469117255712/lxyTRB_Q7aF3H_xlY1vcoV0UWzsdK-sUiwFycrufwp_O-MaM0yFCp7lpCmGd0S61Icrp)
 
 
 ### Discord information
@@ -1099,10 +1100,73 @@ If everything went well, you should see an alert in the discord!
 
 ![discord alert](img/discord_alert_succes.png)
 
+### Configure falco to use the falco sidekick
+
+Now that we have the sidekick installed and running, we need to tell falco to send alerts to the sidekick. We do this by modifying the helm chart/values.yaml again.
+
+```
+cd ~/charts/falco
+```
+
+First, verify that the sidekick is deployed with the name `falcosidekick` in kubernetes. This means we can use DNS auto-discovery. Techncially, this means that the sidekick is deployed behind a kubernetes *service* named `falcosidekick`.
 
 
+```
+$ kubectl get svc
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+falcosidekick   ClusterIP   172.21.4.145   <none>        2801/TCP   48m
+kubernetes      ClusterIP   172.21.0.1     <none>        443/TCP    33h
+```
 
 
+Now make some changes to the `values.yaml`
 
 
+```
+jsonOutput: true
+jsonIncludeOutputProperty: true
+
+...
+
+  httpOutput:
+    enabled: true
+    url: http://falcosidekick:2801
+```
+
+```
+mytestmytest@cloudshell:~/charts/falco$ helm upgrade falco .
+Release "falco" has been upgraded. Happy Helming!
+NAME: falco
+LAST DEPLOYED: Sat Sep 26 03:15:34 2020
+NAMESPACE: default
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+NOTES:
+Falco agents are spinning up on each node in your cluster. After a few
+seconds, they are going to start monitoring your containers looking for
+security issues.
+
+No further action should be required.
+```
+
+Validate:
+
+
+```
+mytestmytest@cloudshell:~/charts/falco$ k get pod
+NAME                             READY   STATUS    RESTARTS   AGE
+falco-hgl4s                      1/1     Running   0          2m1s
+falcosidekick-696b7b5bbc-4nnxw   1/1     Running   0          4m18s
+
+# synthetic security event
+mytestmytest@cloudshell:~/charts/falco$ k exec -it falco-hgl4s /bin/bash
+root@falco-hgl4s:/# exit
+exit
+```
+
+
+With any luck you should be seeing real event alerts in your discord.
+
+![discord success](img/discord_real_alert_success.png)
 
