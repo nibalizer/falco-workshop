@@ -980,6 +980,129 @@ To set up the sidekick, we'll do the following:
 1. Test the sidekick
 1. Re-configure falco to forward events to the sidekick
 
+[discord invite](https://discord.gg/CAJkrUH)
+[discord webhook](https://discordapp.com/api/webhooks/759212469117255712/lxyTRB_Q7aF3H_xlY1vcoV0UWzsdK-sUiwFycrufwp_O-MaM0yFCp7lpCmGd0S61Icrp)
+
+
+### Discord information
+
+Discord is a chat application similar to slack that is popular with gamers. A sample test discord server has been set up for you to test falco chat alerts with. If you'd like to use slack or one of the other outputs for the sidekick, that's fine. Follow the docs at the [sidekick github](https://github.com/falcosecurity/falcosidekick/).
+
+Join the discord server with this [discord invite](https://discord.gg/CAJkrUH).
+This [discord webhook](https://discordapp.com/api/webhooks/759212469117255712/lxyTRB_Q7aF3H_xlY1vcoV0UWzsdK-sUiwFycrufwp_O-MaM0yFCp7lpCmGd0S61Icrp) will be used later when configuring the webhook.
+
+
+### Falco chart
+
+```
+$ cd ~/charts/falcosidekick/
+$ head values.yaml
+# Default values for falcosidekick.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: falcosecurity/falcosidekick
+  tag: 2.13.0
+  pullPolicy: IfNotPresent
+```
+
+Open the `values.yaml` file and configure the following discord configuration:
+
+
+Set `tag` to `latest`.
+
+Set `debug` to `true`.
+
+Set `customfields` to `participantCodename:<make something up>` 
+
+Example:
+
+```
+config:
+
+  debug: true
+  ##
+  ## a list of comma separated custom fields to add to falco events, syntax is "key:value,key:value"
+  customfields: "participantCodename:yeetalizer"
+```
+
+> this will help you tell which alerts are yours in the server, since everyone is using the same webhook
+
+
+Set the discord configuration (near the bottom of the file):
+
+
+```
+  discord:
+    webhookurl: "https://discord.gg/URL_PROVIDED_BY_INSTRUCTOR"
+    icon: ""
+    minimumpriority: ""
+```
+
+No other changes are required.
+
+
+### Install falcosidekick
+
+
+```
+mytestmytest@cloudshell:~/charts/falcosidekick$ helm install falcosidekick .
+NAME: falcosidekick
+LAST DEPLOYED: Sat Sep 26 00:54:23 2020
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=falcosidekick,app.kubernetes.io/instance=falcosidekick" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 2801:2801
+  echo "Visit http://127.0.0.1:2801 to use your application"
+mytestmytest@cloudshell:~/charts/falcosidekick$ k get pod
+NAME                            READY   STATUS    RESTARTS   AGE
+falco-9vmz4                     1/1     Running   0          19m
+falcosidekick-6d58575cd-q5mbj   0/1     Running   0          5s
+mytestmytest@cloudshell:~/charts/falcosidekick$ helm list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+falco           default         1               2020-09-26 00:34:51.827988144 +0000 UTC deployed        falco-1.4.0             0.25.0     
+falcosidekick   default         1               2020-09-26 00:54:23.685505563 +0000 UTC deployed        falcosidekick-0.1.25    2.14.0     
+mytestmytest@cloudshell:~/charts/falcosidekick$ k get pod
+NAME                            READY   STATUS    RESTARTS   AGE
+falco-9vmz4                     1/1     Running   0          19m
+falcosidekick-6d58575cd-q5mbj   1/1     Running   0          14s
+```
+
+To debug/test, set up a port forward to the falcosidekick daemon.
+
+
+```
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=falcosidekick,app.kubernetes.io/instance=falcosidekick" -o jsonpath="{.items[0].metadata.name}")
+
+mytestmytest@cloudshell:~/charts/falcosidekick$ echo $POD_NAME
+falcosidekick-6d58575cd-bl8f4
+mytestmytest@cloudshell:~/charts/falcosidekick$ kubectl port-forward $POD_NAME 2801:2801 &
+[1] 5683
+```
+
+The `&` at the end of the last command is important, it will send the port-forward to the background. 
+
+With that setup you can do a test payload to the sidekick:
+
+```
+$ curl -X POST localhost:2801/test
+Handling connection for 2801
+```
+
+If everything went well, you should see an alert in the discord!
+
+![discord alert](img/discord_alert_succes.png)
+
+
+
+
+
 
 
 
