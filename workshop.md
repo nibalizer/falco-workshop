@@ -1,6 +1,6 @@
 # Falco Workshop
 
-## Spencer Krum
+## Spencer Krum ([@nibalizer](https://twitter.com/nibalizer))
 
 
 In this workshop you'll be introduced to Falco, a security tool. Falco is a Cloud Native Computing Foundation (CNCF) incubating project and is Open Source(Apache 2 Licensed). 
