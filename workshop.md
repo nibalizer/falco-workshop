@@ -64,7 +64,7 @@ Table of Contents
 
 # Account Setup
 
-Sign up for a free IBM Cloud account or log in here:  http://ibm.biz/202007-containers
+Sign up for a free IBM Cloud account or log in with [this link](https://ibm.biz/BdzrV2). Or if that doesn't work - simply going to cloud.ibm.com and pressing 'create an account' will work.
 
 > You might want to ask your IBM instructor to whitelist the public IP and or the above signup link at the following registration whitelisting site: https://cloud.ibm.com/registration/whitelist
 
