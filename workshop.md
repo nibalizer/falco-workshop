@@ -1344,7 +1344,7 @@ Official documentation for setting up the LogDNA agent for an OpenShift cluster 
 
 In the IBM Cloud Platform, logs are aggregated using LogDNA. LogDNA has native support for injesting logs from kubernetes so it is easy to connect LogDNA and your hosted Kubernetes cluster. 
 
-However, because your kubernetes cluster is in an IBM service account and that is a separate account from *your* free trial account, connecting them requires a few extra steps.
+However, because your kubernetes cluster is in an IBM service account and that is a separate account from *your* free trial account, connecting them requires a few extra steps. 
 
 
 | service      | your account         | ibm tutorial account |
@@ -1356,7 +1356,7 @@ However, because your kubernetes cluster is in an IBM service account and that i
 
 ### Create a LogDNA instance
 
-To get started, switch to *your account*, not the "1840867-IBM" account.
+To get started, open a new tab to [cloud.ibm.com](https://cloud.ibm.com) and  switch to *your account*, not the "1840867-IBM" account. Keep your cloud-shell tab open, and in the tutorial account, we'll use it soon.
 
 ![ibm cloud user switch](img/ibm_cloud_user_switcher.jpg)
 
@@ -1400,30 +1400,54 @@ For the following instructions use the IBM Cloud Shell to enter the commands.
 
    ![ldna-3](img/ldna-3.png)
 
-  
+
 1. Click on "Edit log sources"
 
    ![ldna-4](img/ldna-4.png)
 
-1. Select the "OpenShift" tab. Copy, paste, and execute the commands into your IBM Cloud Shell:
+1. Select the "Kubernetes" tab. Copy, paste, and execute the commands into your IBM Cloud Shell:
 
-   ![ldna-5](img/ldna-5.png)
+   ![ldna-5](img/logdna-kube-source.png)
 
 1. Check that the logging agent is running with:
 
    ```
-   $ oc get all -n ibm-observe
+   $ kubectl get all -n ibm-observe
    ```
- 
-   ![ldna-5](images/ldna-6.png)
+
+Then you can view (and search) logs from falco (and the rest of the cluster) via the webUI.
+
+![logdna-falco](img/logdna-falco.png)
 
 
+Congratulations! You've completed extra exercise 1
 
 
+# Extra exercise 2: using gRPC and a custom client to pull falco alerts
+
+Falco has a options for configuring gRPC connections by clients. This makes it possible to write custom clients to consume events with any falco client utilities.
+
+Clients exist in [go](https://github.com/falcosecurity/client-go/), [python](https://github.com/falcosecurity/client-py), and [rust](https://github.com/falcosecurity/client-rs).
+
+There are two ways to connect, one is via a network socket the other is via a unix domain socket. For this example it makes the most sense to use the network socket.
+
+This is a self-directed exercise. If you are able to accomplish it, let the instructor know, and we'll get you some falco swag for your effort.
+
+Steps:
+
+* Generate x509 certs. Use the [certificates](https://falco.org/docs/grpc/) section here. You'll need a full CA toolchain. Server and client certs (sorry!)
+* Configure falco via helm, to use the certs and open up a network socket. [relevant values](https://github.com/falcosecurity/charts/blob/master/falco/values.yaml#L252)
+* Configure "grpcOutput.enabled" to "true". [Falco](https://github.com/falcosecurity/charts/blob/master/falco/values.yaml#L269) by default wont send events even if grpc network socket is open.
+* Configure a `kubectl port-forward` command. `kubectl port-forward svc/falco 5060` might work or is a good start.
+* Install one of the clients. The go and python are the best supported right now. You can test eaily using the `examples/` directory inside both repositories. 
+* `pip install falco` does work in the cloud shell, that's where I'd start.
 
 
+You'll know you've been successfull when you have a running loop of events feeding out your commandline in the cloud shell. Please let your instructor know, we'd love to send you some swag.
 
+# Congratulations
 
+## Outro
 
-
+Thank you for attending the workshop. The [falco community](https://github.com/falcosecurity/community) would love for you to join if you are interested. We have slack (#falco on the kubernetes slack), a weekly meeting, and a mailing list.
 
