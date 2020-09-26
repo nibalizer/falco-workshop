@@ -84,6 +84,8 @@ You've been given a cluster. You'll see the following view. This means a cluster
 
 ![grant cluster success](img/grant_cluster_success.png)
 
+## Switching accounts to the IBM provided account
+
 Return to the main cloud page at [cloud.ibm.com](https://cloud.ibm.com)
 
 ![ibm_cloud_user_switcher.jpg](img/ibm_cloud_user_switcher.jpg)
@@ -107,6 +109,8 @@ ibmcloud ks clusters
 ```
 
 > it's ok to ignore warnings you may see about versions of plugins or kubernetes cluster versions
+
+If you don't see any clusters listed, you probably need to switch accounts. See "Switching accounts to the IBM provided account" above.
 
 ![Confirm cluster access](img/terminal-ready.png)
 
