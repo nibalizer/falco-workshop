@@ -1170,3 +1170,171 @@ With any luck you should be seeing real event alerts in your discord.
 
 ![discord success](img/discord_real_alert_success.png)
 
+
+
+# Writing and reading rules
+
+
+The core utility of Falco is crafting a set of rules general enough to identify malicious behavior but specific enough to not alert on everyday activies and leave you sitting in a pile of alerts.
+
+Falco rules are specified in a YAML dialect and are decently expressive.
+
+A simple rule:
+
+```
+- rule: Delete or rename shell history
+  desc: Detect shell history deletion
+  condition: >
+    open_write and evt.arg.name contains "bash_history"
+  output: >
+    Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.na
+me path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
+  priority:
+    WARNING
+  tags: [process, example]
+```
+
+
+Now that you've seen a number of Falco events, the rules that specify them should look somewhat familiar. [This page](https://falco.org/docs/rules/) is a reference for rules syntax. Rules authors define a number of metadata fields, a conditon, and a string formatted output. In more advanced configurations it's expected you'll be using JSON, but it's also encouraget to pass the "pretty string" along in the json payload so it can be used in human-readable contexts further down the alert pipeline.
+
+Read (or skim) [this documentation](https://falco.org/docs/rules/supported-fields/) which lists what fields you have access to when writing conditions.
+
+Operations: The language supports a number of useful operators, all inherited from the Sysdig [filter syntax](https://github.com/draios/sysdig/wiki/sysdig-user-guide#filtering). An incomplete list is below:
+
+| feature   | syntax  | example |
+|-----------|---------|---------|
+| equals    | =       | evt.type=open |
+| not equals| !=      | proc.name!="<NA>" |
+| and       | and     | evt.is_open_write=true and fd.typechar='f' |
+| or        | or      | |
+| less than | =<      | |
+| grt than  | =>      | |
+| list      | (a, b)  | |
+| contains  | in      |  fd.directory in (/bin, /sbin, /usr/bin, /usr/sbin) |
+| starts with | startswith | fd.name startswith /etc |
+| parens    | ()      | evt.type in (accept,listen) |
+
+
+Macros:
+
+Macros are supported and several are included by default to ease rule writing. [This list](https://falco.org/docs/rules/default-macros/) contains the default macros, and is a great resource for rule writing examples.
+
+Now we can look at something more complicated:
+
+The shell history rule from the default rules:
+
+
+```
+- rule: Delete or rename shell history
+  desc: Detect shell history deletion
+  condition: >
+    (modify and (
+      evt.arg.name contains "bash_history" or
+      evt.arg.name contains "zsh_history" or
+      evt.arg.name contains "fish_read_history" or
+      evt.arg.name endswith "fish_history" or
+      evt.arg.oldpath contains "bash_history" or
+      evt.arg.oldpath contains "zsh_history" or
+      evt.arg.oldpath contains "fish_read_history" or
+      evt.arg.oldpath endswith "fish_history" or
+      evt.arg.path contains "bash_history" or
+      evt.arg.path contains "zsh_history" or
+      evt.arg.path contains "fish_read_history" or
+      evt.arg.path endswith "fish_history")) or
+    (open_write and (
+      fd.name contains "bash_history" or
+      fd.name contains "zsh_history" or
+      fd.name contains "fish_read_history" or
+      fd.name endswith "fish_history") and evt.arg.flags contains "O_TRUNC")
+  output: >
+    Shell history had been deleted or renamed (user=%user.name type=%evt.type command=%proc.cmdline fd.name=%fd.name name=%evt.arg.na
+me path=%evt.arg.path oldpath=%evt.arg.oldpath %container.info)
+  priority:
+    WARNING
+  tags: [process, mitre_defense_evasion]
+```
+
+
+### Rule writing
+
+
+You may have noticed a number of alerts unrelated to any security incidents. These are incorrect alerts that are identified in our rules but not whitelisted.
+
+If you need some errors try something like this:
+
+```
+kubectl create deployment guestbook --image=quay.io/nibalizer/utilities 
+```
+
+> Note: If you're just trying to create a *ton* of errors, falco has a synthetic error creator. Github is [here](https://github.com/falcosecurity/event-generator).
+
+
+```
+03:30:10.941260660: Notice Setuid or setgid bit is set via chmod (fd=<NA> filename=/var/data/cripersistentstorage/io.containerd.snapshotter.v1.overlayfs/snapshots/184/fs/usr/lib/openssh/ssh-keysign mode=S_IXOTH|S_IROTH|S_IXGRP|S_IRGRP|S_IXUSR|S_IWUSR|S_IRUSR|S_ISUID user=root process=containerd command=containerd container_id=host container_name=host image=<NA>:<NA>) k8s.ns=<NA> k8s.pod=<NA> container=host k8s.ns=<NA> k8s.pod=<NA> container=host
+```
+
+This alert is because containerd, as part of the platform, is doing it's job to create and manage files.
+
+
+The following code can whitelist the alert. Add it to `~/charts/falco/rules/falco_rules.yaml`. This is a git-diff output to show clearly (hopefully) where the code needs to go.
+
+```diff
+diff --git a/falco/rules/falco_rules.yaml b/falco/rules/falco_rules.yaml
+index 2fef4ea..3f262d9 100644
+--- a/falco/rules/falco_rules.yaml
++++ b/falco/rules/falco_rules.yaml
+@@ -863,6 +863,12 @@
+ - macro: ipsec_writing_conf
+   condition: (proc.name=start-ipsec.sh and fd.directory=/etc/ipsec)
+ 
++- macro: containerd_manage_files
++  condition: >
++    proc.name = "containerd"
++    and proc.cmdline contains "/var/data/cripersistentstorage"
++    and user.name = "root"
++
+ - macro: exe_running_docker_save
+   condition: >
+     proc.name = "exe"
+@@ -2628,6 +2634,7 @@
+     consider_all_chmods and chmod and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID")
+     and not proc.name in (user_known_chmod_applications)
+     and not exe_running_docker_save
++    and not containerd_manage_files
+     and not user_known_set_setuid_or_setgid_bit_conditions
+   output: >
+     Setuid or setgid bit is set via chmod (fd=%evt.arg.fd filename=%evt.arg.filename mode=%evt.arg.mode user=%user.name process=%proc.name
+```
+
+Apply the updated rules by just applying the helm chart.
+
+```
+$ helm upgrade falco .
+Release "falco" has been upgraded. Happy Helming!
+NAME: falco
+LAST DEPLOYED: Sat Sep 26 04:13:22 2020
+NAMESPACE: default
+STATUS: deployed
+REVISION: 3
+TEST SUITE: None
+NOTES:
+Falco agents are spinning up on each node in your cluster. After a few
+seconds, they are going to start monitoring your containers looking for
+security issues.
+
+No further action should be required.
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
