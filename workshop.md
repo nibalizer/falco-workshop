@@ -1417,7 +1417,7 @@ For the following instructions use the IBM Cloud Shell to enter the commands.
 
 Then you can view (and search) logs from falco (and the rest of the cluster) via the webUI.
 
-![logdna-falco](img/logdna-falco.png)
+![logdna-falco](img/falco-logdna.png)
 
 
 Congratulations! You've completed extra exercise 1
