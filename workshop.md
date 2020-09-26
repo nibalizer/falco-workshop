@@ -1034,7 +1034,7 @@ config:
   customfields: "participantCodename:yeetalizer"
 ```
 
-> this will help you tell which alerts are yours in the server, since everyone is using the same webhook
+> This will help you tell which alerts are yours in the server, since everyone is using the same webhook
 
 
 Set the discord configuration (near the bottom of the file):
@@ -1102,7 +1102,7 @@ Handling connection for 2801
 
 If everything went well, you should see an alert in the discord!
 
-![discord alert](img/discord_alert_succes.png)
+![discord alert](img/discord_alert_success.png)
 
 ### Configure falco to use the falco sidekick
 
