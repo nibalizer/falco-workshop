@@ -480,7 +480,20 @@ The container runtime environment is `containerd`.
 
 ### Setting up helm
 
-You should have the `helm` client installed already. Verify with `which helm` on the command line. If you don't have `helm` already, you can follow the instructions [here](https://github.com/IBM/helm101/tree/master/tutorial/Lab0).
+Installing the Helm Client (helm)
+
+You may have the `helm` client installed already, however, we want version 3 of helm. Verify with `which helm` and `helm version` on the command line. If you have `helm` version 3 already, skip to "Using the helm chart"
+
+The Helm client (`helm`) can be installed from source or pre-built binary releases. In this lab, we are going to use the pre-built binary release (Linux amd64) from the Helm community. Refer to the [Helm install docs](https://helm.sh/docs/intro/install/) for more details.
+
+
+1. Download the [latest release of Helm v3](https://github.com/helm/helm/releases) for your environment, the steps below are for `Linux amd64`, adjust the examples as needed for your environment.
+
+2. Unpack it: `$ tar -zxvf helm-v3.<x>.<y>-linux-amd64.tgz`.
+
+3. Find the helm binary in the unpacked directory, and move it to its desired location: `mv linux-amd64/helm /usr/local/bin/helm`. It is best if the location you copy to is pathed, as it avoids having to path the helm commands.
+
+4. The Helm client is now installed and can be tested with the command, `helm help`.
 
 ### Using the helm chart
 
