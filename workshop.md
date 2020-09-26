@@ -50,12 +50,16 @@ Table of Contents
   * adjust macros
   * trigger rule
 
+* Aggregate logs of events
+  * Setup LogDNA
+  * Configure kubernetes to ship logs to LogDNA
+
 * gRPC
-  * configure unix domain socket
-  * use go client
-  * use python client
-  * use rust client
-  * for python client - make it do another thing (batch probably)
+  * Configure  
+  * Use go client
+  * Use python client
+  * Use rust client
+  * For python client - make it do another thing (batch probably)
 
 
 # Account Setup
@@ -1325,8 +1329,93 @@ security issues.
 No further action should be required.
 ```
 
+Congratulations! You've reached the end of the primary workshop. There are two more exercises but both are optional. We hope you got a good view of Falco and the IBM Cloud!
 
 
+# Extra Exercise 1: Log Aggregation
+
+
+A cloud native application based on microservices contains many parts that create logs. A logging service that is able to collect all distributed logs in one place is a highly recommended tool. There are many logging solutions that you can install directly into your Kubernetes or OpenShift cluster. But then you have an additional application that needs to be maintained and one that needs persistent storage as well to store logs for a period of time. Additionally, log aggregation is a core component of any security team's responsibility.
+
+IBM Cloud offers "Logging as a Service" in the form of [IBM Log Analysis with LogDNA](https://cloud.ibm.com/docs/services/Log-Analysis-with-LogDNA?topic=LogDNA-getting-started#getting-started). It offers features to filter, search, and tail log data, define alerts, and design custom views to monitor application and system logs. You can test "IBM Log Analysis with LogDNA" for free with somewhat limited capabilities and we will show you in this lab how to connect your OpenShift cluster to an instance of it.
+
+Official documentation for setting up the LogDNA agent for an OpenShift cluster is [here](https://cloud.ibm.com/docs/services/Log-Analysis-with-LogDNA?topic=LogDNA-config_agent_os_cluster).
+
+
+In the IBM Cloud Platform, logs are aggregated using LogDNA. LogDNA has native support for injesting logs from kubernetes so it is easy to connect LogDNA and your hosted Kubernetes cluster. 
+
+However, because your kubernetes cluster is in an IBM service account and that is a separate account from *your* free trial account, connecting them requires a few extra steps.
+
+
+| service      | your account         | ibm tutorial account |
+|--------------|----------------------|----------------------|
+|  Log DNA     |  x
+|  Managed Kubernetes |               | x |
+|  Serverless functions | x           | |
+| Cloud Shell | x                     | |
+
+### Create a LogDNA instance
+
+To get started, switch to *your account*, not the "1840867-IBM" account.
+
+![ibm cloud user switch](img/ibm_cloud_user_switcher.jpg)
+
+For the following instructions use the IBM Cloud Shell to enter the commands.
+
+## Step 1 - Create a LogDNA service
+
+1. In your browser log in to the IBM Cloud dashboard
+
+   * Make sure you are using **your own account**.
+
+   * From the "burger menu" select "Observability"
+
+   ![ldna-1](img/ldna-1.png)
+
+
+
+1. Create an "IBM Log Analysis with LogDNA" instance
+
+    * Do not create an "Activity Tracker with LogDNA" Service.
+
+    * Select "Logging" on the left
+
+   * Click "Create a logging instance"
+
+   ![ldna-2](img/ldna-2.png)
+
+   * Leave the default name or choose your own ("logdna-openshift")
+
+1. In the next dialog:
+
+   * Select a region close to your OpenShift cluster
+
+   * Leave the "Lite" pricing plan but take note of the other plans; those are the full featured plans. But you need a paid account to use those. We will use Lite for this lab.
+
+   * Scroll down a bit
+
+   * Leave the service name and the "Default" resource group
+
+   * Click "Create" at the bottom of the dialog.
+
+   ![ldna-3](img/ldna-3.png)
+
+  
+1. Click on "Edit log sources"
+
+   ![ldna-4](img/ldna-4.png)
+
+1. Select the "OpenShift" tab. Copy, paste, and execute the commands into your IBM Cloud Shell:
+
+   ![ldna-5](img/ldna-5.png)
+
+1. Check that the logging agent is running with:
+
+   ```
+   $ oc get all -n ibm-observe
+   ```
+ 
+   ![ldna-5](images/ldna-6.png)
 
 
 
