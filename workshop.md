@@ -467,24 +467,9 @@ NAME            STATUS   ROLES    AGE     VERSION       INTERNAL-IP     EXTERNAL
 
 The container runtime environment is `containerd`.
 
+### Setting up helm
 
-1. Installing the Helm Client (helm)
-
-You may have the `helm` client installed already. Verify with `which helm` on the command line. If you have `helm` already, skip to "Using the helm chart"
-
-The Helm client (`helm`) can be installed from source or pre-built binary releases. In this lab, we are going to use the pre-built binary release (Linux amd64) from the Helm community. Refer to the [Helm install docs](https://helm.sh/docs/intro/install/) for more details.
-
-
-1. Download the [latest release of Helm v3](https://github.com/helm/helm/releases) for your environment, the steps below are for `Linux amd64`, adjust the examples as needed for your environment.
-
-2. Unpack it: `$ tar -zxvf helm-v3.<x>.<y>-linux-amd64.tgz`.
-
-3. Find the helm binary in the unpacked directory, and move it to its desired location: `mv linux-amd64/helm /usr/local/bin/helm`. It is best if the location you copy to is pathed, as it avoids having to path the helm commands.
-
-4. The Helm client is now installed and can be tested with the command, `helm help`.
-
-
-You are now ready to start using Helm.
+You should have the `helm` client installed already. Verify with `which helm` on the command line. If you don't have `helm` already, you can follow the instructions [here](https://github.com/IBM/helm101/tree/master/tutorial/Lab0).
 
 ### Using the helm chart
 
@@ -502,8 +487,10 @@ Resolving deltas: 100% (316/316), done.
 
 $ cd charts/falco
 $ ls
+CHANGELOG.md  Chart.yaml  ci  OWNERS  README.md  rules  templates  values.yaml
 ```
 
+This is the helm chart for installing falco. The entrypoint for configuration is `values.yaml`.
 
 ```
 $ head values.yaml
@@ -521,7 +508,7 @@ docker:
 
 This lays out what version of falco you will be using, in this case `0.25.0`. As this tutorial ages, you might try changing the tag to later [versions](https://github.com/falcosecurity/falco/releases) or the `master` tag. The `values.yaml` file is our main entry point for configuration changes to the falco daemon, you can return to it often.
 
-The only change to do on this is to disable Docker. You only use containerd support on the IBM Cloud so you want to disable Docker so that Kubernetes metadata is properly retrieved by the daemon. To do that set `enabled: true` to `enabled: false` in the docker section of the `config` command, around line 9.
+Change `enabled: true` to `enabled: false` in the docker stanza. You only use containerd support on the IBM Cloud so you want to disable Docker so that Kubernetes metadata is properly retrieved by the daemon. To do that set `enabled: true` to `enabled: false` in the docker section of the `config` command, around line 9.
 
 
 ### 2: Install falco using helm
