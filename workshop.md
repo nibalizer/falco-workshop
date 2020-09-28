@@ -13,7 +13,7 @@ To get you hands on access with Falco we're giving you a free IBM Cloud Account 
 
 Table of Contents
 
-* IBM Cloud Setup
+* [IBM Cloud Setup](#ibm-cloud-setup)
   * Account
   * Cloud Shell
   * Kubernetes Cluster checkout
@@ -62,7 +62,7 @@ Table of Contents
   * For python client - make it do another thing (batch probably)
 
 
-# Account Setup
+# IBM Cloud Setup
 
 Sign up for a free IBM Cloud account or log in with [this link](https://ibm.biz/Bdq3HA). Or if that doesn't work - simply going to cloud.ibm.com and pressing 'create an account' will work.
 
