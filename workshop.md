@@ -19,7 +19,7 @@ Table of Contents
   * Kubernetes Cluster checkout
   * Kubernetes 101 really fast
 
-* Falco and System Calls
+* [Falco and System Calls](#falco-and-system-calls)
 
 * Installing Falco in Kubernetes
   * Verify Kubernetes Configuration
