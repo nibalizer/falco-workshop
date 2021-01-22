@@ -21,25 +21,25 @@ Table of Contents
 
 * [Falco and System Calls](#falco-and-system-calls)
 
-* Installing Falco in Kubernetes
+* [Installing Falco in Kubernetes](#installing-falco-in-kubernetes)
   * Verify Kubernetes Configuration
   * Installing Helm
   * Cloning charts repo
   * Configure values.yaml for helm
   * Helm install
 
-* First events
+* [First events](#watch-falco-in-action)
   * Tail logs in pod
   * Create events
   * Switch to json output
   * Read more events, use jq
 
-* Falco sidekick
+* [Falco sidekick](#falco-sidekick)
   * slack output / discord output
   * set custom string in falco sidekick
   * brief view of other outputs
 
-* Write a rule
+* [Write a rule](#writing-and-reading-rules)
   * rule edit
   * apply using helm
   * trigger rule
@@ -50,11 +50,11 @@ Table of Contents
   * adjust macros
   * trigger rule
 
-* Aggregate logs of events
+* [Aggregate logs of events](#extra-exercise-1-log-aggregation)
   * Setup LogDNA
   * Configure kubernetes to ship logs to LogDNA
 
-* gRPC
+* [gRPC](#extra-exercise-2-using-grpc-and-a-custom-client-to-pull-falco-alerts)
   * Configure  
   * Use go client
   * Use python client
